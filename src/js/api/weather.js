@@ -1,5 +1,5 @@
 // Key
-const apiKey = 'b0e5920c8d27bc3a999bbed7bccbf92a';
+const apiKey = 'WEATHER KEY';
 
 // This can be used to get the current temp of the searched place inside the input box
 // We get the lat and the lon from the opencage API, geocoding.js

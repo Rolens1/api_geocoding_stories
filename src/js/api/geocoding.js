@@ -1,5 +1,5 @@
 // API key
-const apiKey = "b412e0fef649413ca0c4a63c9d5af09e";
+const apiKey = "GEO CODING KEY";
 
 // Was supposed to be used to put the weather API when fetching a city
 // Not yet implemented but can be added

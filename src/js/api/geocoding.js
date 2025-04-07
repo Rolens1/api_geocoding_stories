@@ -1,5 +1,8 @@
+// API key
 const apiKey = "b412e0fef649413ca0c4a63c9d5af09e";
 
+// Was supposed to be used to put the weather API when fetching a city
+// Not yet implemented but can be added
 export async function getCoordinates(city) {
   const res = await fetch(
     `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
@@ -13,6 +16,7 @@ export async function getCoordinates(city) {
     // return data.results[0].components["ISO_3166-1_alpha-2"]
 }
 
+// Get the country code to fetch a flag from another API
 export async function getCountryCode(city) {
   const res = await fetch(
     `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(

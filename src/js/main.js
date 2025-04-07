@@ -1,70 +1,65 @@
-import { getCoordinates, getCountryCode } from "./api/geocoding.js";
+// Import the needed components to make the app work
+import { getCountryCode } from "./api/geocoding.js";
 import { getImage } from "./api/pixabay.js";
 import { getWeather } from "./api/weather.js";
 import { getWiki } from "./api/wiki.js";
 
+// Initialize the required elements 
 const cityInput = document.querySelector("#search_input");
-const btnSearch = document.querySelector("#btn_search");
 const formSearch = document.getElementById("form_search");
 
-// console.log("Go");
-
+// Waiting for a form submit, since we do a fetch call from an api
+// We will need to do async to wait for the datas to load 
 formSearch.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const cityName = cityInput.value.trim();
-  console.log(cityName);
+  // trim the input value to not have spaces
+  const search_ = cityInput.value.trim();
 
-  if (!cityName) {
-    console.log("Veuillez entrer ville");
+  // if no search_
+  if (!search_) {
     return;
   }
 
+  // if search_
   try {
-    const coords = await getCoordinates(cityName);
-    const story = await getWiki(cityName)
-    await renderStory(cityName, story)
-    console.log(coords)
-    const weather = await getWeather(coords.lat, coords.lng)
-
-    console.log(weather)
+    // get the story from wikipedia
+    const story = await getWiki(search_)
+    // call a function that will render a html element with all the descriptive
+    await renderStory(search_, story)
 
   } catch (error) {
-    console.log("Erreur geo loc", error);
+    console.log("Error loading search", error);
   }
 });
 
-async function renderStory(city, story, containerId = "main_story") {
-  const image = await getImage(city);
+async function renderStory(userInput, story, containerId = "main_story") {
+  // get the needed elements to put inside the story container
+  const image = await getImage(userInput);
   const container = document.getElementById(containerId);
-  const countryCode = await getCountryCode(city)
+  const countryCode = await getCountryCode(userInput)
   const flag_link = `https://flagsapi.com/${countryCode}/flat/64.png`
   
-
+  // activate the active class for the form search
   formSearch.classList.add("active")
 
+  // put the new div inside the #main_story placeholder div element in the html
   container.innerHTML = `
     <div class="story-card">
       <div class="story-header">
-        <h2>${city}</h2>
-        <img src="${flag_link}" alt="${city}" class="city-flag">
+        <h2>${userInput}</h2>
+         ${countryCode ? `<img src="${flag_link}" alt="${userInput}" class="city-flag">` : ''}
       </div>
-      ${image ? `<img src="${image}" alt="${city}" class="city-image">` : ''}
+      ${image ? `<img src="${image}" alt="${userInput}" class="city-image">` : ''}
       <p>${story}</p>
     </div>`;
 }
 
-// Gestion de l'input
+// See if the input changes, if it changes and it is empty, we remove the active class
 cityInput.addEventListener("input", () => {
     if (cityInput.value.trim() === '') {
         formSearch.classList.remove('active');
     } else {
-        formSearch.classList.add('active'); // Important : ajoute la classe quand il y a du texte
+        formSearch.classList.add('active');
     }
 });
-
-// Gestion du focus pour une meilleure UX
-cityInput.addEventListener("focus", () => {
-    formSearch.classList.add('active');
-});
-

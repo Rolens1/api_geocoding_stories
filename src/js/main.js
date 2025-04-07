@@ -39,7 +39,6 @@ async function renderStory(city, story, containerId = "main_story") {
   const container = document.getElementById(containerId);
   const countryCode = await getCountryCode(city)
   const flag_link = `https://flagsapi.com/${countryCode}/flat/64.png`
-  console.log(flag_link)
   
 
   formSearch.classList.add("active")
@@ -54,3 +53,18 @@ async function renderStory(city, story, containerId = "main_story") {
       <p>${story}</p>
     </div>`;
 }
+
+// Gestion de l'input
+cityInput.addEventListener("input", () => {
+    if (cityInput.value.trim() === '') {
+        formSearch.classList.remove('active');
+    } else {
+        formSearch.classList.add('active'); // Important : ajoute la classe quand il y a du texte
+    }
+});
+
+// Gestion du focus pour une meilleure UX
+cityInput.addEventListener("focus", () => {
+    formSearch.classList.add('active');
+});
+

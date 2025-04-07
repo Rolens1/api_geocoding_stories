@@ -1,5 +1,7 @@
-import { getCoordinates } from "./api/geocoding.js";
+import { getCoordinates, getCountryCode } from "./api/geocoding.js";
 import { getImage } from "./api/pixabay.js";
+import { getWeather } from "./api/weather.js";
+import { getWiki } from "./api/wiki.js";
 
 const cityInput = document.querySelector("#search_input");
 const btnSearch = document.querySelector("#btn_search");
@@ -20,19 +22,35 @@ formSearch.addEventListener("submit", async (e) => {
 
   try {
     const coords = await getCoordinates(cityName);
-    console.log(coords);
+    const story = await getWiki(cityName)
+    await renderStory(cityName, story)
+    console.log(coords)
+    const weather = await getWeather(coords.lat, coords.lng)
+
+    console.log(weather)
+
   } catch (error) {
     console.log("Erreur geo loc", error);
   }
 });
 
-async function renderStory(city, containerId = "main_story") {
+async function renderStory(city, story, containerId = "main_story") {
   const image = await getImage(city);
   const container = document.getElementById(containerId);
+  const countryCode = await getCountryCode(city)
+  const flag_link = `https://flagsapi.com/${countryCode}/flat/64.png`
+  console.log(flag_link)
+  
+
+  formSearch.classList.add("active")
 
   container.innerHTML = `
-      <div class="story">
+    <div class="story-card">
+      <div class="story-header">
         <h2>${city}</h2>
-        ${image ? `<img src="${image}" alt="${city}">` : ""}
-    `;
+        <img src="${flag_link}" alt="${city}" class="city-flag">
+      </div>
+      ${image ? `<img src="${image}" alt="${city}" class="city-image">` : ''}
+      <p>${story}</p>
+    </div>`;
 }
